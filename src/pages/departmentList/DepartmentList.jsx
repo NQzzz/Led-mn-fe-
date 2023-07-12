@@ -1,16 +1,23 @@
 import './departmentlist.css';
 import { DataGrid } from '@material-ui/data-grid';
-import { DeleteOutline } from '@material-ui/icons';
+// import { DeleteOutline } from '@material-ui/icons';
 // import { dataUser, userRows } from '../../dummyData';
 import { Link } from 'react-router-dom';
-import { useEffect, useState, useRef  } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { Button } from '@material-ui/core';
+import AddLeds from './AddLeds';
+import UpdateLed from '../led_by_department/UpdateLed';
+import UpdateDepartment from './UpdateDepartment';
+import AddDepartment from './AddDepartment';
+import DeleteDepartment from './DeleteDepartment';
 
 export default function DepartmentList() {
+  const [change, setChange]= useState()
   const [departmentData, setDepartmentData] = useState([]);
   const token = Cookies.get('token');
-  const dataGridRef = useRef(null); 
+  const dataGridRef = useRef(null);
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -25,7 +32,7 @@ export default function DepartmentList() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [change]);
 
   const handleDelete = (id) => {
     const updatedData = departmentData.filter((item) => item.id !== id);
@@ -34,11 +41,38 @@ export default function DepartmentList() {
 
   const columns = [
     // { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', width: 200 , renderCell: renderNameCell },
-    { field: 'address', headerName: 'Address', width: 200 },
-    { field: 'status', headerName: 'Status', width: 120,renderCell: renderStatusCell },
-    { field: 'created_at', headerName: 'Created At', width: 160 },
-    { field: 'updated_at', headerName: 'Updated At', width: 160 },
+    { field: 'name', headerName: 'Name', flex: 1, renderCell: renderNameCell },
+    { field: 'address', headerName: 'Address', flex: 1 },
+    {
+      field: 'status',
+      headerName: 'Status',
+      flex: 1,
+      renderCell: renderStatusCell,
+    },
+    {
+      field: 'action',
+      headerName: 'Action',
+      flex: 6,
+      renderCell: (params) => {
+        return (
+          <>
+            <Button variant={'contained'} color={'primary'}>
+              <Link
+                state={{ ...params.row }}
+                to='./leds'
+                style={{ color: '#fff' }}>
+                Led by department
+              </Link>
+            </Button>
+            <AddLeds department_id={params.row.id} />
+            <UpdateDepartment setChange={setChange} {...params.row} />
+            <DeleteDepartment setChange={setChange} {...params.row} />
+          </>
+        );
+      },
+    },
+    { field: 'created_at', headerName: 'Created At', flex: 1 },
+    { field: 'updated_at', headerName: 'Updated At', flex: 1 },
     // {
     //   field: 'action',
     //   headerName: 'Action',
@@ -64,18 +98,20 @@ export default function DepartmentList() {
 
   function renderNameCell(params) {
     const departmentId = params.row.id;
-    return (
-      <Link to={`/department/${departmentId}`}>
-        {params.value}
-      </Link>
-    );
+    return <Link to={`/department/${departmentId}`}>{params.value}</Link>;
   }
 
   const departmentArray = Object.values(departmentData); // Chuyển đổi object thành mảng
 
   return (
-    <div className='departmentList'>
-      <DataGrid ref={dataGridRef} rows={departmentArray} columns={columns} pageSize={8} />
+    <div className='departmentList' style={{flexDirection: "column", gap: 10}}>
+      <AddDepartment setChange={setChange} />
+      <DataGrid
+        ref={dataGridRef}
+        rows={departmentArray}
+        columns={columns}
+        pageSize={8}
+      />
     </div>
   );
 }

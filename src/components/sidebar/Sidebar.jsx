@@ -53,10 +53,10 @@ export default function Sidebar() {
                 Users
               </li>
             </Link>
-            <Link to='/products' className={`link ${location.pathname === '/products' ? 'active' : ''}`}>
-              <li className={`sidebarListItem ${location.pathname === '/products' ? 'active' : ''}`}>
+            <Link to='/leds' className={`link ${location.pathname === '/leds' ? 'active' : ''}`}>
+              <li className={`sidebarListItem ${location.pathname === '/leds' ? 'active' : ''}`}>
                 <Storefront className='sidebarIcon' />
-                Contents
+                Leds
               </li>
             </Link>
             <Link to='/department' className={`link ${location.pathname === '/department' ? 'active' : ''}`}>

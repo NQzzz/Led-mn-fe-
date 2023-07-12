@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 
 export default function Topbar() {
   const data = Cookies.get('user');
-  const userData = JSON.parse(data);
+  const userData = data ? JSON.parse(data) : undefined;
   console.log(userData);
   const toggleUserWindow = () => {
     const userWindow = document.getElementById('userWindow');

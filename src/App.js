@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useNavigate,
+} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsUser } from './redux/slice/selectors';
 import jwtDecode from 'jwt-decode';
-
-
 
 import Sidebar from './components/sidebar/Sidebar';
 import Topbar from './components/topbar/Topbar';
@@ -21,37 +26,41 @@ import DepartmentList from './pages/departmentList/DepartmentList';
 import './App.css';
 
 import Cookies from 'js-cookie';
+import LedByDepartment from './pages/led_by_department/LedByDepartment';
+import Leds from './pages/lesd/Leds';
+import ContentByLed from './pages/contentByLeds/ContentByLeds';
 
 function App() {
-  const [saved, setSaved] = useState(null);
+  const [saved, setSaved] = useState();
 
   useEffect(() => {
     const token = Cookies.get('token');
     let tokenCheckInterval;
-  
+
     if (token) {
       const isValidToken = checkTokenValidity(token);
-  
+
       if (isValidToken) {
         setSaved(token);
       } else {
+        setSaved(false)
         handleInvalidToken();
       }
-  
+
       // Thiết lập kiểm tra lại tính hợp lệ của token sau một khoảng thời gian (ví dụ: 5 phút)
       tokenCheckInterval = setInterval(() => {
         const updatedToken = Cookies.get('token');
-  
+
         if (!updatedToken || !checkTokenValidity(updatedToken)) {
           handleInvalidToken();
           clearInterval(tokenCheckInterval);
         }
       }, 30 * 60 * 1000); // 5 phút (đơn vị: mili giây)
     }
-  
-    return () => {
-      clearInterval(tokenCheckInterval);
-    };
+    else {
+      setSaved(false)
+    }
+
   }, []);
 
   // Xử lý khi token không hợp lệ
@@ -68,15 +77,15 @@ function App() {
     try {
       // Giải mã token (đối với JWT)
       const decodedToken = jwtDecode(token);
-  
+
       // Kiểm tra thời gian hết hạn
       const currentTime = Date.now() / 1000; // Thời gian hiện tại (đơn vị: giây)
-  
+
       if (decodedToken.exp < currentTime) {
         // Token đã hết hạn
         return false;
       }
-  
+
       // Token hợp lệ
       return true;
     } catch (error) {
@@ -86,41 +95,44 @@ function App() {
   }
   return (
     <BrowserRouter>
-      <Routes >
+      <Routes>
         <Route
-          path="/login"
-          element={saved !== null ? <Navigate to="/" replace /> : <Login />}
+          path='/login'
+          element={
+            (saved !== undefined && saved !== false) ? <Navigate to='/' replace /> : <Login />
+          }
         />
 
-        {saved !== null ? (
-          <Route
-            path="/"
-            element={
-              <>
-                <Topbar />
-                <div className="container">
-                  <Sidebar />
-                  <Outlet /> 
-                 
-                
-                </div>
-              </>
-            }
-          >
-            <Route index element={<Home />} />
-                    <Route  path="users" element={<UserList />} />
-                    <Route path="user/:userId" element={<User />} />
-                    <Route path="newUser" element={<NewUser />} />
-                    <Route path="products" element={<ProductList />} />
-                    <Route path="product/:productId" element={<Product />} />
-                    <Route path="newproduct" element={<NewProduct />} />
-                    <Route path="department" element={<DepartmentList />} />
-                    <Route path="department/:id" element={<Department />} />
-                    
-                    
-          </Route>
-        ) : (
-          <Route path="*" element={<Navigate to="/login" replace />} />
+        {saved !== undefined && saved !== false && (
+          <>
+            <Route
+              path='/'
+              element={
+                <>
+                  <Topbar />
+                  <div className='container'>
+                    <Sidebar />
+                    <Outlet />
+                  </div>
+                </>
+              }>
+              <Route index element={<Home />} />
+              <Route path='users' element={<UserList />} />
+              <Route path='user/:userId' element={<User />} />
+              <Route path='newUser' element={<NewUser />} />
+              <Route path='products' element={<ProductList />} />
+              <Route path='product/:productId' element={<Product />} />
+              <Route path='newproduct' element={<NewProduct />} />
+              <Route path='department' element={<DepartmentList />} />
+              <Route path='department/leds' element={<LedByDepartment />} />
+              <Route path='department/:id' element={<Department />} />
+              <Route path='leds' element={<Leds />} />
+              <Route path='leds/content/:id' element={<ContentByLed />} />
+            </Route>
+          </>
+        )}
+        {saved === false && (
+          <Route path='*' element={<Navigate to='/login' />} />
         )}
       </Routes>
     </BrowserRouter>
@@ -128,4 +140,3 @@ function App() {
 }
 
 export default App;
-
