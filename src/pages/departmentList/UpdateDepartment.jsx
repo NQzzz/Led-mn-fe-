@@ -7,19 +7,19 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextField } from '@material-ui/core';
 import axios from 'axios';
-import Cookies from "js-cookie"
+import Cookies from 'js-cookie';
 import swal from 'sweetalert';
 
 export default function UpdateDepartment(props) {
-  const {  id, setChange } = props;
+  const { id, setChange } = props;
   const [open, setOpen] = React.useState(false);
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
 
-  useEffect(()=> {
-    setName(props.name)
-    setAddress(props.address)
-  }, [props])
+  useEffect(() => {
+    setName(props.name);
+    setAddress(props.address);
+  }, [props]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,9 +43,7 @@ export default function UpdateDepartment(props) {
         onClose={handleClose}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'>
-        <DialogTitle id='alert-dialog-title'>
-          {'Update department'}
-        </DialogTitle>
+        <DialogTitle id='alert-dialog-title'>{'Update department'}</DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
             <TextField
@@ -64,35 +62,39 @@ export default function UpdateDepartment(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>
-            Disagree
+            Close
           </Button>
-          <Button onClick={async ()=> {
-            try {
-                
-                const res= await axios({
-                    url: "https://led-mn.vercel.app/api/departments/"+ id,
-                    method: "put",
-                    data: {
-                        name, address
-                    },
-                    headers: { Authorization: `Bearer ${Cookies.get('token')}` },
-                })
-                const result= await res.data
-                if(result) {
-                    swal("Thông báo", "Update department success", "success")
-                    .then(()=> setChange(prev=> !prev))
-                    .then(()=> handleClose())
-                    .then(()=> {
-                        setName("")
-                        setAddress("")
-                    })
+          <Button
+            onClick={async () => {
+              try {
+                const res = await axios({
+                  url: 'https://led-mn.vercel.app/api/departments/' + id,
+                  method: 'put',
+                  data: {
+                    name,
+                    address,
+                  },
+                  headers: { Authorization: `Bearer ${Cookies.get('token')}` },
+                });
+                const result = await res.data;
+                if (result) {
+                  swal('Thông báo', 'Update department success', 'success')
+                    .then(() => setChange((prev) => !prev))
+                    .then(() => handleClose())
+                    .then(() => {
+                      setName('');
+                      setAddress('');
+                    });
                 }
-                return result
-            }catch(e) {
-                swal("Notice", "Update department failed", "error")
-                .then(()=> handleClose())
-            }
-          }} color='primary' autoFocus>
+                return result;
+              } catch (e) {
+                swal('Notice', 'Update department failed', 'error').then(() =>
+                  handleClose(),
+                );
+              }
+            }}
+            color='primary'
+            autoFocus>
             Update
           </Button>
         </DialogActions>

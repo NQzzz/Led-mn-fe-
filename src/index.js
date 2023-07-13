@@ -10,7 +10,7 @@ const store = configureAppStore();
 ReactDOM.render(
   <React.StrictMode>
     <StoreProvider store={store}>
-    <App />
+      <App />
     </StoreProvider>
   </React.StrictMode>,
   document.getElementById('root'),

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,20 +10,13 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import swal from 'sweetalert';
 
-export default function UpdateLed(props) {
-  const { department_id, id, setChange } = props;
+export default function AddUsers() {
+    const user= JSON.parse(Cookies.get("user"))
+    console.log(user)
   const [open, setOpen] = React.useState(false);
   const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [deviceCode, setDeviceCode] = useState('');
-  const [size, setSize] = useState('');
-
-  useEffect(() => {
-    setName(props.name);
-    setAddress(props.address);
-    setDeviceCode(props.device_code);
-    setSize(props.size);
-  }, [props]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,14 +33,16 @@ export default function UpdateLed(props) {
         variant='contained'
         color='primary'
         onClick={handleClickOpen}>
-        Update leds
+        Add user
       </Button>
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'>
-        <DialogTitle id='alert-dialog-title'>{'Upload Led'}</DialogTitle>
+        <DialogTitle id='alert-dialog-title'>
+          {'Add user by department'}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
             <TextField
@@ -58,23 +53,17 @@ export default function UpdateLed(props) {
             />
             <TextField
               style={{ width: '400px', height: 40, margin: '12px 0' }}
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              label='Address'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              label='Email'
             />
 
             <TextField
               style={{ width: '400px', height: 40, margin: '12px 0' }}
-              value={deviceCode}
-              onChange={(e) => setDeviceCode(e.target.value)}
+              value={password}
+              type={'password'}
+              onChange={(e) => setPassword(e.target.value)}
               label='Device Code'
-            />
-
-            <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
-              value={size}
-              onChange={(e) => setSize(e.target.value)}
-              label='Size'
             />
           </DialogContentText>
         </DialogContent>
@@ -86,39 +75,35 @@ export default function UpdateLed(props) {
             onClick={async () => {
               try {
                 const res = await axios({
-                  url: 'https://led-mn.vercel.app/api/led-panels/' + id,
-                  method: 'put',
+                  url: 'https://led-mn.vercel.app/api/users',
+                  method: 'post',
                   data: {
                     name,
-                    address,
-                    department_id,
-                    device_code: deviceCode,
-                    size,
+                    email,
+                    status: 1,
+                    password,
+                    roleId: user.role_id
                   },
                   headers: { Authorization: `Bearer ${Cookies.get('token')}` },
                 });
                 const result = await res.data;
                 if (result) {
-                  swal('Thông báo', 'Update leds success', 'success')
-                    .then(() => setChange((prev) => !prev))
+                  swal('Thông báo', 'Create users success', 'success')
                     .then(() => handleClose())
                     .then(() => {
                       setName('');
-                      setSize('');
-                      setAddress('');
-                      setDeviceCode('');
+                      setEmail('');
+                      setPassword('');
                     });
                 }
                 return result;
               } catch (e) {
-                swal('Notice', 'Update leds failed', 'error').then(() =>
-                  handleClose(),
-                );
+                swal('Notice', 'Create users failed', 'error');
               }
             }}
             color='primary'
             autoFocus>
-            Update
+            Create
           </Button>
         </DialogActions>
       </Dialog>

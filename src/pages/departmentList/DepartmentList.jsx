@@ -3,7 +3,7 @@ import { DataGrid } from '@material-ui/data-grid';
 // import { DeleteOutline } from '@material-ui/icons';
 // import { dataUser, userRows } from '../../dummyData';
 import { Link } from 'react-router-dom';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
@@ -12,8 +12,10 @@ import UpdateLed from '../led_by_department/UpdateLed';
 import UpdateDepartment from './UpdateDepartment';
 import AddDepartment from './AddDepartment';
 import DeleteDepartment from './DeleteDepartment';
+import { AppContext } from 'src/App';
 
 export default function DepartmentList() {
+  const {priority}= useContext(AppContext)
   const [change, setChange]= useState()
   const [departmentData, setDepartmentData] = useState([]);
   const token = Cookies.get('token');
@@ -52,7 +54,7 @@ export default function DepartmentList() {
     {
       field: 'action',
       headerName: 'Action',
-      flex: 6,
+      flex: priority=== 1 ? 6 : 2,
       renderCell: (params) => {
         return (
           <>
@@ -65,8 +67,13 @@ export default function DepartmentList() {
               </Link>
             </Button>
             <AddLeds department_id={params.row.id} />
-            <UpdateDepartment setChange={setChange} {...params.row} />
-            <DeleteDepartment setChange={setChange} {...params.row} />
+            {
+              parseInt(priority) === 1 && 
+              <>
+                <UpdateDepartment setChange={setChange} {...params.row} />
+                <DeleteDepartment setChange={setChange} {...params.row} />
+              </>
+            }
           </>
         );
       },
@@ -105,7 +112,10 @@ export default function DepartmentList() {
 
   return (
     <div className='departmentList' style={{flexDirection: "column", gap: 10}}>
-      <AddDepartment setChange={setChange} />
+      {
+        parseInt(priority) === 1 &&
+        <AddDepartment setChange={setChange} />
+      }
       <DataGrid
         ref={dataGridRef}
         rows={departmentArray}

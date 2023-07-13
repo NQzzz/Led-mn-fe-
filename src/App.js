@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -30,8 +30,10 @@ import LedByDepartment from './pages/led_by_department/LedByDepartment';
 import Leds from './pages/lesd/Leds';
 import ContentByLed from './pages/contentByLeds/ContentByLeds';
 
+export const AppContext= createContext()
 function App() {
   const [saved, setSaved] = useState();
+  const [priority, setPriority]= useState()
 
   useEffect(() => {
     const token = Cookies.get('token');
@@ -42,6 +44,7 @@ function App() {
 
       if (isValidToken) {
         setSaved(token);
+        setPriority(JSON.parse(Cookies.get("user")).role_id)
       } else {
         setSaved(false)
         handleInvalidToken();
@@ -94,48 +97,50 @@ function App() {
     }
   }
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path='/login'
-          element={
-            (saved !== undefined && saved !== false) ? <Navigate to='/' replace /> : <Login />
-          }
-        />
+    <AppContext.Provider value={{priority}}>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path='/login'
+            element={
+              (saved !== undefined && saved !== false) ? <Navigate to='/' replace /> : <Login />
+            }
+          />
 
-        {saved !== undefined && saved !== false && (
-          <>
-            <Route
-              path='/'
-              element={
-                <>
-                  <Topbar />
-                  <div className='container'>
-                    <Sidebar />
-                    <Outlet />
-                  </div>
-                </>
-              }>
-              <Route index element={<Home />} />
-              <Route path='users' element={<UserList />} />
-              <Route path='user/:userId' element={<User />} />
-              <Route path='newUser' element={<NewUser />} />
-              <Route path='products' element={<ProductList />} />
-              <Route path='product/:productId' element={<Product />} />
-              <Route path='newproduct' element={<NewProduct />} />
-              <Route path='department' element={<DepartmentList />} />
-              <Route path='department/leds' element={<LedByDepartment />} />
-              <Route path='department/:id' element={<Department />} />
-              <Route path='leds' element={<Leds />} />
-              <Route path='leds/content/:id' element={<ContentByLed />} />
-            </Route>
-          </>
-        )}
-        {saved === false && (
-          <Route path='*' element={<Navigate to='/login' />} />
-        )}
-      </Routes>
-    </BrowserRouter>
+          {saved !== undefined && saved !== false && (
+            <>
+              <Route
+                path='/'
+                element={
+                  <>
+                    <Topbar />
+                    <div className='container'>
+                      <Sidebar />
+                      <Outlet />
+                    </div>
+                  </>
+                }>
+                <Route index element={<Navigate to={"/users"} replace />} />
+                <Route path='users' element={<UserList />} />
+                <Route path='user/:userId' element={<User />} />
+                <Route path='newUser' element={<NewUser />} />
+                <Route path='products' element={<ProductList />} />
+                <Route path='product/:productId' element={<Product />} />
+                <Route path='newproduct' element={<NewProduct />} />
+                <Route path='department' element={<DepartmentList />} />
+                <Route path='department/leds' element={<LedByDepartment />} />
+                <Route path='department/:id' element={<Department />} />
+                <Route path='leds' element={<Leds />} />
+                <Route path='leds/content/:id' element={<ContentByLed />} />
+              </Route>
+            </>
+          )}
+          {saved === false && (
+            <Route path='*' element={<Navigate to='/login' />} />
+          )}
+        </Routes>
+      </BrowserRouter>
+    </AppContext.Provider>
   );
 }
 

@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import Cookies from 'js-cookie';
 import swal from "sweetalert"
+import { useParams } from 'react-router-dom';
 
 export default function AddContent(props) {
   const { setChange } = props;
@@ -25,6 +26,7 @@ export default function AddContent(props) {
   const [message, setMessage] = useState('');
   const [value, setValue] = useState('');
   const [open, setOpen] = useState(false);
+  const {id }= useParams()
 
   const handleChange = (event) => {
     setMessage(event.target.value);
@@ -67,10 +69,11 @@ export default function AddContent(props) {
       type: type=== "text" ? 0 : (type=== "image" ? 1 : 2),
       name: message,
       path: key.key,
+
     };
     axios
       .post(
-        'https://led-mn.vercel.app/api/display-content/1',
+        'https://led-mn.vercel.app/api/display-content/'+ id,
         jsonData, config
       )
       .then((response) => {

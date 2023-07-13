@@ -3,11 +3,17 @@ import { DataGrid } from '@material-ui/data-grid';
 import { DeleteOutline } from '@material-ui/icons';
 import { dataUser, userRows } from '../../dummyData';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import AddUsers from './AddUser';
+import DeleteUsers from './DeleteUsers';
+import UpdateUser from './UpdateUser';
+import { AppContext } from 'src/App';
 
 export default function UserList() {
+  const {priority}= useContext(AppContext)
+  const [change, setChange]= useState(false)
   const [data, setData] = useState([]);
   const token  = Cookies.get('token');
   const config = {
@@ -32,14 +38,14 @@ export default function UserList() {
     console.error(error);
   });;
 
-  }, []);
+  }, [change]);
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'id', headerName: 'ID', flex: 1  },
     {
       field: 'user',
       headerName: 'User',
-      width: 200,
+      flex: 1 ,
       renderCell: (params) => {
         return (
           <div className='userListUser'>
@@ -49,32 +55,26 @@ export default function UserList() {
         );
       },
     },
-    { field: 'email', headerName: 'Email', width: 200 },
+    { field: 'email', headerName: 'Email', flex: 1 },
     {
       field: 'status',
       headerName: 'Status',
-      width: 120,
-    },
-    {
-      field: 'transaction',
-      headerName: 'Transaction Volume',
-      width: 160,
+      flex: 1 ,
     },
     {
       field: 'action',
       headerName: 'Action',
-      width: 150,
+      flex:  priority=== 1 ? 2 : 1.5,
       renderCell: (params) => {
         // console.log(params)
         return (
           <>
-            <Link state={params.row.id} to={'/user/' + params.row.id}>
-              <button className='userListEdit'>Edit</button>
-            </Link>
-            <DeleteOutline
-              className='userListDelete'
-              onClick={() => handleDelete(params.row.id)}
-            />
+            {
+              priority=== 1 && 
+            <AddUsers setChange={setChange} />
+            }
+            <UpdateUser {...params.row} setChange={setChange} />
+            <DeleteUsers {...params.row} setChange={setChange} />
           </>
         );
       },
@@ -88,7 +88,6 @@ export default function UserList() {
         disableSelectionOnClick
         columns={columns}
         pageSize={8}
-        checkboxSelection
       />
     </div>
   );

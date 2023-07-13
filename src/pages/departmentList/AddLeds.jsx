@@ -7,7 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextField } from '@material-ui/core';
 import axios from 'axios';
-import Cookies from "js-cookie"
+import Cookies from 'js-cookie';
 import swal from 'sweetalert';
 
 export default function AddLeds(props) {
@@ -75,36 +75,41 @@ export default function AddLeds(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>
-            Disagree
+            Close
           </Button>
-          <Button onClick={async ()=> {
-            try {
-                
-                const res= await axios({
-                    url: "https://led-mn.vercel.app/api/led-panels/",
-                    method: "post",
-                    data: {
-                        name, address, department_id, device_code: deviceCode, size
-                    },
-                    headers: { Authorization: `Bearer ${Cookies.get('token')}` },
-                })
-                const result= await res.data
-                if(result) {
-                    swal("Thông báo", "Create leds success", "success")
-                    .then(()=> handleClose())
-                    .then(()=> {
-                        setName("")
-                        setSize("")
-                        setAddress("")
-                        setDeviceCode("")
-                    })
+          <Button
+            onClick={async () => {
+              try {
+                const res = await axios({
+                  url: 'https://led-mn.vercel.app/api/led-panels/',
+                  method: 'post',
+                  data: {
+                    name,
+                    address,
+                    department_id,
+                    device_code: deviceCode,
+                    size,
+                  },
+                  headers: { Authorization: `Bearer ${Cookies.get('token')}` },
+                });
+                const result = await res.data;
+                if (result) {
+                  swal('Thông báo', 'Create leds success', 'success')
+                    .then(() => handleClose())
+                    .then(() => {
+                      setName('');
+                      setSize('');
+                      setAddress('');
+                      setDeviceCode('');
+                    });
                 }
-                return result
-            }catch(e) {
-                swal("Notice", "Create leds failed", "error")
-
-            }
-          }} color='primary' autoFocus>
+                return result;
+              } catch (e) {
+                swal('Notice', 'Create leds failed', 'error');
+              }
+            }}
+            color='primary'
+            autoFocus>
             Create
           </Button>
         </DialogActions>

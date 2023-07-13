@@ -7,8 +7,10 @@ import { useEffect, useState, useRef  } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import AddContent from './AddContent';
-import { Button } from '@material-ui/core';
+// import { Button } from '@material-ui/core';
 import ViewContent from './ViewContent';
+import UpdateContent from './UpdateContent';
+import DeleteContent from './DeleteContent';
 
 export default function ContentByLed(props) {
   const {id }= useParams()
@@ -50,9 +52,11 @@ export default function ContentByLed(props) {
     } },
     { field: 'type', headerName: 'Type', flex: 1 },
     { field: 'path', headerName: 'Path', flex: 1 },
-    {field: "action", headerName: "Action", flex: 1, renderCell: (params)=> {
+    {field: "action", headerName: "Action", flex: 3, renderCell: (params)=> {
       return <>
         <ViewContent {...params.row} />
+        <UpdateContent {...params.row} setChange={setChange} />
+        <DeleteContent {...params.row} setChange={setChange} />
       </>
     }}
     // {
