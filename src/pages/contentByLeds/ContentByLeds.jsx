@@ -1,34 +1,30 @@
-// import './departmentlist.css';
 import { DataGrid } from '@material-ui/data-grid';
-// import { DeleteOutline } from '@material-ui/icons';
-// import { dataUser, userRows } from '../../dummyData';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import { useEffect, useState, useRef  } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import AddContent from './AddContent';
-// import { Button } from '@material-ui/core';
-import ViewContent from './ViewContent';
-import UpdateContent from './UpdateContent';
-import DeleteContent from './DeleteContent';
+import ViewContent from './ViewContent'; // Import ViewContent từ file tương ứng
+import UpdateContent from './UpdateContent'; // Import UpdateContent từ file tương ứng
+import DeleteContent from './DeleteContent'; // Import DeleteContent từ file tương ứng
+import { IconButton, Popover } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 
-export default function ContentByLed(props) {
-  const {id }= useParams()
-  console.log(useLocation().state)
+export default function ContentByLed() {
+  const { id } = useParams();
   const [departmentData, setDepartmentData] = useState([]);
   const token = Cookies.get('token');
-  const dataGridRef = useRef(null); 
-  const [change, setChange]= useState(false)
+  const dataGridRef = useRef(null);
+  const [change, setChange] = useState(false);
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
 
   useEffect(() => {
     axios
-      .get('https://led-mn.vercel.app/api/display-content/led-panels/'+ id || "", config)
+      .get(`https://led-mn.vercel.app/api/display-content/led-panels/${id}`, config)
       .then((response) => {
-        // console.log(response.data);
-        setDepartmentData(response.data.map(item=> (item.display_content)));
+        setDepartmentData(response.data.map((item) => item.display_content));
       })
       .catch((error) => {
         console.error(error);
@@ -40,63 +36,78 @@ export default function ContentByLed(props) {
     setDepartmentData(updatedData);
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedContent, setSelectedContent] = useState(null);
+
+  const handleActionClick = (event, content) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedContent(content);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedContent(null);
+  };
+
+  const handleDeleteContent = () => {
+    if (selectedContent) {
+      handleDelete(selectedContent.id);
+    }
+    handleMenuClose();
+  };
+
   const columns = [
-    // { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', flex: 1 , renderCell: (params)=> {
-        if(params.row.name?.length > 0) {
-            return params.row.name
-        }
-        else {
-            return "No name"
-        }
-    } },
-    { field: 'type', headerName: 'Type', flex: 1 },
-    { field: 'path', headerName: 'Path', flex: 1 },
-    {field: "action", headerName: "Action", flex: 3, renderCell: (params)=> {
-      return <>
-        <ViewContent {...params.row} />
-        <UpdateContent {...params.row} setChange={setChange} />
-        <DeleteContent {...params.row} setChange={setChange} />
-      </>
-    }}
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   width: 150,
-    //   renderCell: (params) => (
-    //     <>
-    //       <Link state={params.row.id} to={'/user/' + params.row.id}>
-    //         <button className='departmentListEdit'>Edit</button>
-    //       </Link>
-    //       <DeleteOutline
-    //         className='departmentListDelete'
-    //         onClick={() => handleDelete(params.row.id)}
-    //       />
-    //     </>
-    //   ),
-    // },
+    { field: 'name', headerName: 'Name', flex: 1, renderCell: (params) => params.row.name || 'No name' },
+    { field: 'type', headerName: 'Type', flex: 1, renderCell: (params) => renderTypeCell(params.value) },
+    {
+      field: 'action',
+      headerName: 'Action',
+      flex: 3,
+      renderCell: (params) => (
+        <IconButton onClick={(event) => handleActionClick(event, params.row)}>
+          <MoreVert />
+        </IconButton>
+      ),
+    },
   ];
 
-  function renderStatusCell(params) {
-    const status = params.value === 1 ? 'Active' : 'Inactive';
-    return <span>{status}</span>;
-  }
-
-  function renderNameCell(params) {
-    const departmentId = params.row.id;
-    return (
-      <Link to={`/department/${departmentId}`}>
-        {params.value}
-      </Link>
-    );
-  }
-
-  const departmentArray = Object.values(departmentData); // Chuyển đổi object thành mảng
+  const renderTypeCell = (type) => {
+    let displayType = '';
+    if (type === 0) {
+      displayType = 'Text';
+    } else if (type === 1) {
+      displayType = 'Image';
+    } else if (type === 2) {
+      displayType = 'Video';
+    }
+    return <span>{displayType}</span>;
+  };
 
   return (
-    <div className='departmentList' style={{flexDirection: "column", gap: 10}}>
+    <div className='departmentList' style={{ flexDirection: 'column', gap: 10 }}>
       <AddContent setChange={setChange} />
-      <DataGrid ref={dataGridRef} rows={departmentArray} columns={columns} pageSize={8} />
+      <DataGrid ref={dataGridRef} rows={departmentData} columns={columns} pageSize={8} />
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        {selectedContent && (
+          <div>
+            <ViewContent {...selectedContent} />
+            <UpdateContent {...selectedContent} setChange={setChange} />
+            <DeleteContent {...selectedContent} setChange={setChange} />
+          </div>
+        )}
+      </Popover>
     </div>
   );
 }

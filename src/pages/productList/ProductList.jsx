@@ -27,7 +27,7 @@ export default function ProductList() {
   // const data12 = JSON.stringify(data123);
 
   useEffect(() => {
-    axios.get('https://led-mn.vercel.app/api/display-content/led-panels/1', config)
+    axios.get('https://led-mn.vercel.app/api/display-content/led-panels/', config)
   .then((response) => {
     // console.log(response.data[0].display_content);
     console.log(response.data);

@@ -79,22 +79,7 @@ export default function Department() {
     { field: 'address', headerName: 'Address', width: 200 },
     { field: 'active', headerName: 'Status', width: 120,renderCell: renderStatusCell },
     { field: 'created_at', headerName: 'Created At', width: 160 },
-    // {
-    //   field: 'action',
-    //   headerName: 'Action',
-    //   width: 150,
-    //   renderCell: (params) => (
-    //     <>
-    //       <Link state={params.row.id} to={'/user/' + params.row.id}>
-    //         <button className='departmentListEdit'>Edit</button>
-    //       </Link>
-    //       <DeleteOutline
-    //         className='departmentListDelete'
-    //         onClick={() => handleDelete(params.row.id)}
-    //       />
-    //     </>
-    //   ),
-    // },
+  
   ];
 
   function renderStatusCell(params) {

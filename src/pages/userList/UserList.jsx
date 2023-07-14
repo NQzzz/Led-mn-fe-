@@ -41,7 +41,6 @@ export default function UserList() {
   }, [change]);
 
   const columns = [
-    { field: 'id', headerName: 'ID', flex: 1  },
     {
       field: 'user',
       headerName: 'User',
@@ -49,7 +48,7 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <div className='userListUser'>
-            <img className='userListImg' src={params.row.avatar} alt='' />
+            
             {params.row.name}
           </div>
         );

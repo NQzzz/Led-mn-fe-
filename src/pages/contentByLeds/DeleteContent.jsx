@@ -30,7 +30,7 @@ export default function DeleteContent(props) {
         style={{ marginLeft: 12, backgroundColor: "#f00", color: "#fff" }}
         variant='contained'
         onClick={handleClickOpen}>
-        Delete user
+        Delete Content 
       </Button>
       <Dialog
         open={open}

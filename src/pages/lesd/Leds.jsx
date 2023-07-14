@@ -10,11 +10,14 @@ import UpdateLed from '../led_by_department/UpdateLed';
 
 export default function Leds() {
   const [departmentData, setDepartmentData] = useState([]);
+
   const token = Cookies.get('token');
+
   const dataGridRef = useRef(null);
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
+
 
   useEffect(() => {
     axios

@@ -7,24 +7,24 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import axios from 'axios';
-import Cookies from "js-cookie"
+import Cookies from 'js-cookie';
 import swal from 'sweetalert';
 
 export default function UpdateContent(props) {
-  const user= JSON.parse(Cookies.get("user"))
-  const {  id, setChange } = props;
+  const user = JSON.parse(Cookies.get('user'));
+  const { id, setChange } = props;
   const [open, setOpen] = React.useState(false);
-  const [name, setName]= useState('')
-  const [type, setType]= useState("")
-  const [path, setPath]= useState("")
-  const [file, setFile]= useState()
-  const [value, setValue]= useState("")
+  const [name, setName] = useState('');
+  const [type, setType] = useState('');
+  const [path, setPath] = useState('');
+  const [file, setFile] = useState();
+  const [value, setValue] = useState('');
 
-  useEffect(()=> {
-    setName(props.name)
-    setType(props.type)
-    setPath(props.path)
-  }, [props])
+  useEffect(() => {
+    setName(props.name);
+    setType(props.type);
+    setPath(props.path);
+  }, [props]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -33,24 +33,23 @@ export default function UpdateContent(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
   function getFileType(file) {
     return file.type;
   }
+
   const onImageChange = (item) => {
     const fileType = getFileType(item.target.files[0]);
     setFile(item.target.files[0]);
     setType(fileType);
   };
-  const config = {
-    headers: { Authorization: `Bearer ${Cookies.get('token')}` },
-  };
+
   const handleFileImage = () => {
     return new Promise((resolve, reject) => {
       axios
-        .get(
-          `https://led-mn.vercel.app/api/display-content/presigned-url?contentType=${type}`,
-          config,
-        )
+        .get(`https://led-mn.vercel.app/api/display-content/presigned-url?contentType=${type}`, {
+          headers: { Authorization: `Bearer ${Cookies.get('token')}` },
+        })
         .then((response) => {
           resolve(response.data);
         })
@@ -59,6 +58,7 @@ export default function UpdateContent(props) {
         });
     });
   };
+
   const handleUpload = (data) => {
     return new Promise((resolve, reject) => {
       axios
@@ -72,11 +72,13 @@ export default function UpdateContent(props) {
         });
     });
   };
+
   return (
     <div>
       <Button
         variant='contained'
-        onClick={handleClickOpen} style={{ marginLeft: 12, background: "#2dc275", color: "#fff"}}>
+        onClick={handleClickOpen}
+        style={{ marginLeft: 12, background: '#2dc275', color: '#fff' }}>
         Update content
       </Button>
       <Dialog
@@ -84,38 +86,27 @@ export default function UpdateContent(props) {
         onClose={handleClose}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'>
-        <DialogTitle id='alert-dialog-title'>
-          {'Update content'}
-        </DialogTitle>
+        <DialogTitle id='alert-dialog-title'>{'Update content'}</DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
             <TextField
-                fullWidth
-              style={{  height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{ height: 40, margin: '12px 0' }}
               value={name}
               onChange={(e) => setName(e.target.value)}
               label={'Name'}
             />
             <FormControl fullWidth style={{ marginBottom: 12 }}>
               <InputLabel>Type</InputLabel>
-              <Select
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
-                required>
+              <Select value={value} onChange={(event) => setValue(event.target.value)} required>
                 <MenuItem value='video'>Video</MenuItem>
                 <MenuItem value='image'>Image</MenuItem>
                 <MenuItem value='text'>Text</MenuItem>
               </Select>
             </FormControl>
-            {
-              value === "text" ? 
-              <TextField
-              fullWidth
-              label='Name'
-              value={name}
-              onChange={(e)=> setName(e.target.value)}
-              required
-            /> :
+            {value === 'text' ? (
+              <TextField fullWidth label='Name' value={name} onChange={(e) => setName(e.target.value)} required />
+            ) : (
               <div style={{ position: 'relative', display: 'inline-block' }}>
                 <label
                   htmlFor='file'
@@ -135,19 +126,29 @@ export default function UpdateContent(props) {
                   style={{ position: 'absolute', left: '-9999px' }}
                 />
               </div>
-            }
-           
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>
             Close
           </Button>
-          <Button onClick={async ()=> {
-                handleFileImage()
-                  .then((data) => handleUpload(data).then(data2=> console.log(123)).catch(e=> console.log(123)))
-                  .catch(e=> console.log(123))
-          }} color='primary' autoFocus>
+          <Button
+            onClick={async () => {
+              if (value === 'image' || value === 'video') {
+                try {
+                  const data = await handleFileImage();
+                  await handleUpload(data);
+                  console.log('Update successful');
+                } catch (error) {
+                  console.error(error);
+                  swal('Notice', 'Update failed', 'error');
+                }
+              }
+              handleClose();
+            }}
+            color='primary'
+            autoFocus>
             Update
           </Button>
         </DialogActions>
