@@ -53,13 +53,13 @@ export default function SetContentForLed(props) {
                 onClick={async () => {
                   try {
                     const res= await axios({
-                      url: "https://led-mn.vercel.app/api/display-content/"+ contentId + "/led-pandel",
+                      url: "https://led-mn.vercel.app/api/display-content/"+ contentId + "/led-panel",
                       method: "post",
                       headers: {
                         "Authorization": `Bearer ${Cookies.get('token')}`
                       },
                       data: {
-                        ledPanelId: id
+                        "ledPanelId": id
                       }
                     })
                     const result= await res.data
