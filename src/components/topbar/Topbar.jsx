@@ -6,11 +6,12 @@ import {
   AccountBox,
 } from '@material-ui/icons';
 import Cookies from 'js-cookie';
+import LockIcon from '@material-ui/icons/Lock';
+import ChangePassword from './ChangePassword';
 
 export default function Topbar() {
   const data = Cookies.get('user');
   const userData = data ? JSON.parse(data) : undefined;
-  console.log(userData);
   const toggleUserWindow = () => {
     const userWindow = document.getElementById('userWindow');
     userWindow.classList.toggle('show');
@@ -48,6 +49,7 @@ export default function Topbar() {
             </div>
             <p>{userData.name} </p>
           </div>
+          <ChangePassword />
           <div style={{ display: 'flex', alignItems: 'center', gap: 20, cursor: "pointer" }}>
             <div className='WindowContentIcon'>
               <Settings />

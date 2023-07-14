@@ -30,7 +30,7 @@ export default function DeleteContent(props) {
         style={{ marginLeft: 12, backgroundColor: "#f00", color: "#fff" }}
         variant='contained'
         onClick={handleClickOpen}>
-        Delete user
+        Delete content
       </Button>
       <Dialog
         open={open}
@@ -38,7 +38,7 @@ export default function DeleteContent(props) {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'>
         <DialogTitle id='alert-dialog-title'>
-          {'Delete user'}
+          {'Delete content'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
