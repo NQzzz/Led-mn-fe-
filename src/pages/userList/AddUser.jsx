@@ -29,7 +29,7 @@ export default function AddUsers() {
   return (
     <div>
       <Button
-        style={{ marginLeft: 12 }}
+        style={{marginBottom: 12}}
         variant='contained'
         color='primary'
         onClick={handleClickOpen}>
@@ -41,29 +41,32 @@ export default function AddUsers() {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'>
         <DialogTitle id='alert-dialog-title'>
-          {'Add user by department'}
+          {'Add user'}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
+          <DialogContentText style={{width: 400}} id='alert-dialog-description'>
             <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{height: 40, margin: '12px 0' }}
               value={name}
               onChange={(e) => setName(e.target.value)}
               label={'Name'}
             />
             <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{height: 40, margin: '12px 0' }}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               label='Email'
             />
 
             <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{height: 40, margin: '12px 0' }}
               value={password}
               type={'password'}
               onChange={(e) => setPassword(e.target.value)}
-              label='Device Code'
+              label='Password'
             />
           </DialogContentText>
         </DialogContent>

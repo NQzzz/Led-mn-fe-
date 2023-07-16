@@ -12,40 +12,37 @@ import UpdateUser from './UpdateUser';
 import { AppContext } from 'src/App';
 
 export default function UserList() {
-  const {priority}= useContext(AppContext)
-  const [change, setChange]= useState(false)
+  const { priority } = useContext(AppContext);
+  const [change, setChange] = useState(false);
   const [data, setData] = useState([]);
-  const token  = Cookies.get('token');
+  const token = Cookies.get('token');
   const config = {
-    headers: { Authorization: `Bearer ${token}` }
-};
-
- 
+    headers: { Authorization: `Bearer ${token}` },
+  };
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
 
   useEffect(() => {
-    console.log(config)
-    axios.get('https://led-mn.vercel.app/api/users', config)
-  .then((response) => {
-    console.log(response.data);
-    setData(response.data);
-   
-  })
-  .catch((error) => {
-    console.error(error);
-  });;
-
+    console.log(config);
+    axios
+      .get('https://led-mn.vercel.app/api/users', config)
+      .then((response) => {
+        console.log(response.data);
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [change]);
 
   const columns = [
-    { field: 'id', headerName: 'ID', flex: 1  },
+    { field: 'id', headerName: 'ID', flex: 1 },
     {
       field: 'user',
       headerName: 'User',
-      flex: 1 ,
+      flex: 1,
       renderCell: (params) => {
         return (
           <div className='userListUser'>
@@ -59,20 +56,17 @@ export default function UserList() {
     {
       field: 'status',
       headerName: 'Status',
-      flex: 1 ,
+      flex: 1,
     },
     {
       field: 'action',
       headerName: 'Action',
-      flex:  priority=== 1 ? 2 : 1.5,
+      flex: priority === 1 ? 1 : 1,
       renderCell: (params) => {
         // console.log(params)
         return (
           <>
-            {
-              priority=== 1 && 
-            <AddUsers setChange={setChange} />
-            }
+            {/* {priority === 1 && <AddUsers setChange={setChange} />} */}
             <UpdateUser {...params.row} setChange={setChange} />
             <DeleteUsers {...params.row} setChange={setChange} />
           </>
@@ -82,7 +76,15 @@ export default function UserList() {
   ];
 
   return (
-    <div className='userList'>
+    <div
+      className='userList'
+      style={{ display: 'flex', flexDirection: 'column' }}>
+      <div>
+        <div style={{ fontSize: 18, marginBottom: 12 }}>
+          Danh sách tài khoản trên hệ thống
+        </div>
+        {priority === 1 && <AddUsers setChange={setChange} />}
+      </div>
       <DataGrid
         rows={data}
         disableSelectionOnClick

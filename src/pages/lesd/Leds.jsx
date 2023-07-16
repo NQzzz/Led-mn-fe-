@@ -94,7 +94,8 @@ export default function Leds() {
   const departmentArray = Object.values(departmentData); // Chuyển đổi object thành mảng
 
   return (
-    <div className='departmentList'>
+    <div className='departmentList' style={{display: "flex", flexDirection: "column"}}>
+      <div style={{marginBottom: 12, fontSize: 18}}>Danh sách bảng led trong hệ thống</div>
       <DataGrid
         ref={dataGridRef}
         rows={departmentArray}

@@ -10,7 +10,7 @@ import UpdateLed from './UpdateLed';
 import DeleteLed from './DeleteLed';
 
 export default function LedByDepartment(props) {
-  const { id } = useLocation().state;
+  const { id, name, address } = useLocation().state;
   console.log(useLocation().state);
   const [departmentData, setDepartmentData] = useState([]);
   const token = Cookies.get('token');
@@ -93,13 +93,19 @@ export default function LedByDepartment(props) {
   const departmentArray = Object.values(departmentData); // Chuyển đổi object thành mảng
 
   return (
-    <div className='departmentList'>
-      <DataGrid
-        ref={dataGridRef}
-        rows={departmentArray}
-        columns={columns}
-        pageSize={8}
-      />
-    </div>
+    <>
+      <div className='departmentList' style={{display: "flex", flexDirection: "column"}}>
+        <div>
+          <div style={{fontSize: 18, marginBottom: 12}}>Danh sách bảng led của chi nhánh {name || "_"}</div>
+          <div style={{marginBottom: 12}}>Địa chỉ: {address || "_"}</div>
+        </div>
+        <DataGrid
+          ref={dataGridRef}
+          rows={departmentArray}
+          columns={columns}
+          pageSize={8}
+        />
+      </div>
+    </>
   );
 }

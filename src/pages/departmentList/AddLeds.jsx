@@ -44,29 +44,33 @@ export default function AddLeds(props) {
           {'Add leds by department'}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
+          <DialogContentText style={{width: 400}} id='alert-dialog-description'>
             <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{height: 40, margin: '12px 0' }}
               value={name}
               onChange={(e) => setName(e.target.value)}
               label={'Name'}
             />
             <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{height: 40, margin: '12px 0' }}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               label='Address'
             />
 
             <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{height: 40, margin: '12px 0' }}
               value={deviceCode}
               onChange={(e) => setDeviceCode(e.target.value)}
               label='Device Code'
             />
 
             <TextField
-              style={{ width: '400px', height: 40, margin: '12px 0' }}
+              fullWidth
+              style={{height: 40, margin: '12px 0' }}
               value={size}
               onChange={(e) => setSize(e.target.value)}
               label='Size'

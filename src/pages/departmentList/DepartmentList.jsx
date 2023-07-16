@@ -112,10 +112,13 @@ export default function DepartmentList() {
 
   return (
     <div className='departmentList' style={{flexDirection: "column", gap: 10}}>
+      <div>
+      <div style={{fontSize: 18, marginBottom: 12}}>Danh sách phòng ban của hệ thống</div>
       {
         parseInt(priority) === 1 &&
         <AddDepartment setChange={setChange} />
       }
+      </div>
       <DataGrid
         ref={dataGridRef}
         rows={departmentArray}
