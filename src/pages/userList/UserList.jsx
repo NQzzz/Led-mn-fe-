@@ -61,14 +61,18 @@ export default function UserList() {
     {
       field: 'action',
       headerName: 'Action',
-      flex: priority === 1 ? 1 : 1,
+      flex: priority === 1 ? 1 : 0,
       renderCell: (params) => {
         // console.log(params)
         return (
           <>
             {/* {priority === 1 && <AddUsers setChange={setChange} />} */}
-            <UpdateUser {...params.row} setChange={setChange} />
-            <DeleteUsers {...params.row} setChange={setChange} />
+            {
+              priority === 1 && <>
+                <UpdateUser {...params.row} setChange={setChange} />
+                <DeleteUsers {...params.row} setChange={setChange} />
+              </>
+            }
           </>
         );
       },
