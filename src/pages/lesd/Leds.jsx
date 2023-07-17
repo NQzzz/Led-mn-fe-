@@ -44,6 +44,11 @@ export default function Leds() {
       renderCell: renderStatusCell,
     },
     {
+      field: 'department_id',
+      headerName: 'Department id',
+      flex: 1,
+    },
+    {
       field: 'action',
       headerName: 'Action',
       flex: 1,
