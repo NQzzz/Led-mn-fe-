@@ -29,6 +29,7 @@ import Cookies from 'js-cookie';
 import LedByDepartment from './pages/led_by_department/LedByDepartment';
 import Leds from './pages/lesd/Leds';
 import ContentByLed from './pages/contentByLeds/ContentByLeds';
+import Schedule from './pages/schedule/Schedule';
 
 export const AppContext= createContext()
 function App() {
@@ -138,6 +139,8 @@ function App() {
           {saved === false && (
             <Route path='*' element={<Navigate to='/login' />} />
           )}
+          <Route path="content/schedule" element={<Schedule />} />
+
         </Routes>
       </BrowserRouter>
     </AppContext.Provider>
